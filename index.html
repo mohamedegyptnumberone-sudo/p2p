@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#F6F3ED">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="mobile-web-app-capable" content="yes">
+<title>P2P Connect · Calls · Chat · Files</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ================= SETUP CARD (first run) ================= -->
+<div class="overlay" id="setupOverlay">
+  <div class="modal-box setup-box">
+    <div class="setup-icon">🔗</div>
+    <h3>Welcome to P2P Connect</h3>
+    <p class="modal-text">
+      Direct device-to-device calls, chat and file sharing — no server, no account.
+      Give your 4-digit ID to a friend so they can call you.
+    </p>
+    <div class="setup-tips">
+      <div class="tip-title">📱 On phones</div>
+      <ul>
+        <li>Tap <b>Share → Add to Home Screen</b> to install it like an app.</li>
+        <li>Allow microphone &amp; camera when prompted.</li>
+        <li>Keep this tab visible during calls.</li>
+      </ul>
+    </div>
+    <div class="modal-actions">
+      <button class="primary" id="setupDoneBtn">Got it, let's go</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= PROFILE MODAL ================= -->
+<div class="overlay" id="profileOverlay">
+  <div class="modal-box">
+    <h3 id="profileTitle">Set up your profile</h3>
+    <div class="profile-preview" id="profilePreview" title="Tap to change picture">?</div>
+    <input type="file" id="profilePictureInput" accept="image/*" style="display:none">
+    <label for="profileNameInput">Your name</label>
+    <input type="text" id="profileNameInput" placeholder="e.g. Alex Morgan" maxlength="24" autocomplete="off">
+    <div class="modal-actions">
+      <button class="secondary" id="profileCancelBtn">Cancel</button>
+      <button class="primary" id="profileSaveBtn">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= SETTINGS MODAL ================= -->
+<div class="overlay" id="settingsOverlay">
+  <div class="modal-box">
+    <h3>⚙️ Settings</h3>
+    <div class="setting-row">
+      <div>
+        <div class="setting-label">Notification sound</div>
+        <div class="setting-hint">Ring on incoming calls</div>
+      </div>
+      <label class="switch">
+        <input type="checkbox" id="settingSound">
+        <span class="slider"></span>
+      </label>
+    </div>
+    <div class="setting-row">
+      <div>
+        <div class="setting-label">Desktop notifications</div>
+        <div class="setting-hint">Show popup on new calls / messages</div>
+      </div>
+      <label class="switch">
+        <input type="checkbox" id="settingNotif">
+        <span class="slider"></span>
+      </label>
+    </div>
+    <div class="setting-row column">
+      <div class="setting-label">Your ID</div>
+      <div class="id-row">
+        <span class="id-chip" id="settingsIdText">—</span>
+        <button class="mini-btn" id="copyIdBtn">Copy</button>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="primary" id="settingsCloseBtn">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= SAVE CHAT PROMPT ================= -->
+<div class="overlay" id="saveChatOverlay">
+  <div class="modal-box">
+    <h3>💾 Keep previous chats?</h3>
+    <p class="modal-text">You have chat history from your last session. Would you like to keep it?</p>
+    <div class="modal-actions">
+      <button class="secondary" id="saveChatNoBtn">Clear</button>
+      <button class="primary" id="saveChatYesBtn">Keep chats</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= SAVE CONTACT MODAL ================= -->
+<div class="overlay" id="saveContactOverlay">
+  <div class="modal-box">
+    <h3>📇 Save this contact?</h3>
+    <div class="profile-preview" id="saveContactPreview">?</div>
+    <div class="save-contact-name" id="saveContactName">—</div>
+    <div class="save-contact-number" id="saveContactNumber">—</div>
+    <div class="modal-actions">
+      <button class="secondary" id="saveContactCancelBtn">Not now</button>
+      <button class="primary" id="saveContactConfirmBtn">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= GAME INVITE ================= -->
+<div class="overlay" id="gameInviteOverlay">
+  <div class="modal-box incoming-box">
+    <div class="ring-avatar" id="gameInviteAvatar">🎮</div>
+    <h3>Game invite</h3>
+    <div class="caller-name" id="gameInviteName">—</div>
+    <p class="modal-text">wants to start a new round. Play now?</p>
+    <div class="actions">
+      <button class="call-btn reject" id="gameInviteNoBtn" title="No">✕</button>
+      <button class="call-btn accept" id="gameInviteYesBtn" title="Yes">✓</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= CALCULATOR ================= -->
+<div class="overlay" id="calcOverlay">
+  <div class="modal-box calc-box">
+    <h3>Calculator</h3>
+    <div class="calc-display" id="calcDisplay">0</div>
+    <div class="calc-grid" id="calcGrid">
+      <button data-k="clear" class="calc-fn">C</button>
+      <button data-k="sign" class="calc-fn">±</button>
+      <button data-k="percent" class="calc-fn">%</button>
+      <button data-k="÷" class="calc-op">÷</button>
+      <button data-k="7">7</button>
+      <button data-k="8">8</button>
+      <button data-k="9">9</button>
+      <button data-k="×" class="calc-op">×</button>
+      <button data-k="4">4</button>
+      <button data-k="5">5</button>
+      <button data-k="6">6</button>
+      <button data-k="-" class="calc-op">−</button>
+      <button data-k="1">1</button>
+      <button data-k="2">2</button>
+      <button data-k="3">3</button>
+      <button data-k="+" class="calc-op">+</button>
+      <button data-k="0" class="calc-zero">0</button>
+      <button data-k=".">.</button>
+      <button data-k="=" class="calc-eq">=</button>
+    </div>
+    <button class="secondary" id="calcCloseBtn" style="margin-top:0.9rem;width:100%;">Close</button>
+  </div>
+</div>
+
+<!-- ================= INCOMING CALL ================= -->
+<div class="overlay" id="incomingOverlay">
+  <div class="modal-box incoming-box">
+    <div class="ring-avatar" id="incomingAvatar">📞</div>
+    <h3>Incoming call</h3>
+    <div class="caller-name" id="incomingName">—</div>
+    <div class="caller-id" id="incomingNumber">—</div>
+    <div class="call-type" id="incomingType">Voice call</div>
+    <div class="actions">
+      <button class="call-btn reject" id="rejectCallBtn" title="Reject">✕</button>
+      <button class="call-btn accept" id="acceptCallBtn" title="Accept">✓</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= MAIN APP ================= -->
+<div class="app" id="mainApp">
+
+  <header class="header">
+    <button class="header-left" id="headerLeft" title="Edit profile">
+      <div class="my-avatar" id="myAvatar">?</div>
+      <div class="header-info">
+        <div class="my-name" id="myName">Anonymous</div>
+        <div class="my-number" id="myNumberEl" title="Click to copy">
+          <span class="id-dot"></span>#<b id="myNumberText">—</b>
+        </div>
+      </div>
+    </button>
+    <div class="header-actions">
+      <button class="icon-btn-header" id="settingsBtn" title="Settings">⚙️</button>
+    </div>
+  </header>
+
+  <div class="presence-strip" id="presenceStrip">
+    <span class="status-dot" id="peerStripDot"></span>
+    <span class="presence-label" id="peerStripLabel">Offline</span>
+    <span class="presence-name" id="peerStripName"></span>
+  </div>
+
+  <main class="main-area">
+
+    <!-- ===== CALLS ===== -->
+    <section class="panel active" id="panel-call">
+      <div class="video-call-container" id="videoCallContainer">
+        <div class="video-grid">
+          <div class="video-box">
+            <video id="localVideo" autoplay playsinline muted></video>
+            <span class="label" id="localVideoLabel">You</span>
+          </div>
+          <div class="video-box">
+            <video id="remoteVideo" autoplay playsinline></video>
+            <span class="label" id="remoteVideoLabel">Peer</span>
+          </div>
+        </div>
+        <div class="video-call-controls">
+          <button class="call-btn mute" id="videoMuteBtn" title="Mute">🎤</button>
+          <button class="call-btn video-toggle active" id="videoToggleBtn" title="Camera">📹</button>
+          <button class="call-btn hangup" id="videoHangupBtn" title="Hang up">✕</button>
+        </div>
+      </div>
+
+      <div class="dial-pad" id="dialPad">
+        <div class="dial-head">
+          <label for="peerNumberInput">Enter peer's ID</label>
+          <input id="peerNumberInput" type="tel" placeholder="1234" autocomplete="off" inputmode="numeric" maxlength="4">
+        </div>
+        <div class="dial-buttons">
+          <button class="call-now" id="callNowBtn">📞 Call</button>
+          <button class="call-now video" id="videoCallBtn">📹 Video</button>
+        </div>
+
+        <div class="contacts-section">
+          <div class="contacts-header">
+            <span>Contacts</span>
+            <span id="contactCount">0</span>
+          </div>
+          <div class="contacts-search">
+            <span class="cs-ic">🔍</span>
+            <input type="text" id="contactSearchInput" placeholder="Search…" autocomplete="off">
+          </div>
+          <div class="contacts-list" id="contactsList">
+            <div class="empty-contacts">No saved contacts yet.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="call-panel hidden" id="activeCallPanel">
+        <div class="call-avatar" id="callAvatar">👤</div>
+        <div class="call-name" id="callNameDisplay"></div>
+        <div class="call-number" id="callNumberDisplay">—</div>
+        <div class="call-state" id="callStateText">Calling…</div>
+        <div class="call-actions">
+          <button class="call-btn mute" id="muteCallBtn" title="Mute">🎤</button>
+          <button class="call-btn video-toggle" id="voiceToVideoBtn" title="Turn on camera">📹</button>
+          <button class="call-btn hangup" id="hangupCallBtn" title="Hang up">✕</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== CHAT ===== -->
+    <section class="panel" id="panel-chat">
+      <div class="chat-toolbar">
+        <button class="tool-btn" id="bgPickerBtn" title="Background">🎨</button>
+        <button class="tool-btn" id="dateBtn" title="Date &amp; time">📅</button>
+        <button class="tool-btn" id="calcBtn" title="Calculator">🧮</button>
+        <div class="bg-swatches" id="bgSwatches">
+          <button data-bg="#F6F3ED" class="swatch" style="background:#F6F3ED" title="Cream"></button>
+          <button data-bg="#E8F0EC" class="swatch" style="background:#E8F0EC" title="Mint"></button>
+          <button data-bg="#EAE3D6" class="swatch" style="background:#EAE3D6" title="Sand"></button>
+          <button data-bg="#F4E4E0" class="swatch" style="background:#F4E4E0" title="Blush"></button>
+          <button data-bg="#E4E8F0" class="swatch" style="background:#E4E8F0" title="Sky"></button>
+          <button data-bg="#2F3E46" class="swatch" style="background:#2F3E46" title="Charcoal"></button>
+        </div>
+        <div class="date-picker-popup" id="datePickerPopup">
+          <label for="dateInputField">Date</label>
+          <input type="date" id="dateInputField">
+          <label for="timeInputField">Time</label>
+          <input type="time" id="timeInputField">
+          <button class="mini-primary" id="sendDateBtn">Send</button>
+        </div>
+      </div>
+
+      <div class="messages" id="messages">
+        <div class="msg system">Connect to a peer to start chatting.</div>
+      </div>
+
+      <div class="typing-indicator" id="typingIndicator">
+        <span class="typing-bubble"><i></i><i></i><i></i></span>
+        <span class="typing-label" id="typingLabel">typing…</span>
+      </div>
+
+      <div class="reply-preview" id="replyPreview">
+        <div class="reply-preview-bar"></div>
+        <div class="reply-preview-content">
+          <div class="reply-preview-author" id="replyPreviewAuthor"></div>
+          <div class="reply-preview-text" id="replyPreviewText"></div>
+        </div>
+        <button class="reply-preview-close" id="replyPreviewClose" title="Cancel">✕</button>
+      </div>
+
+      <div class="input-bar">
+        <button class="icon-btn" id="attachBtn" title="Attach" disabled>📎</button>
+        <input type="text" id="chatInput" placeholder="Message…" disabled autocomplete="off">
+        <button class="icon-btn" id="recordBtn" title="Hold to record" disabled>🎙️</button>
+        <button class="icon-btn send" id="sendBtn" title="Send" disabled>➤</button>
+      </div>
+    </section>
+
+    <!-- ===== GAME ===== -->
+    <section class="panel" id="panel-game">
+      <div class="game-panel">
+        <div class="game-players">
+          <div class="player-card me" id="playerCardMe">
+            <div class="pc-avatar" id="pcAvatarMe">?</div>
+            <div class="pc-info">
+              <div class="pc-name" id="pcNameMe">You</div>
+              <div class="pc-symbol" id="pcSymbolMe">—</div>
+            </div>
+            <div class="pc-wins" id="pcWinsMe">0</div>
+          </div>
+          <div class="vs-badge">VS</div>
+          <div class="player-card peer" id="playerCardPeer">
+            <div class="pc-avatar" id="pcAvatarPeer">?</div>
+            <div class="pc-info">
+              <div class="pc-name" id="pcNamePeer">Peer</div>
+              <div class="pc-symbol" id="pcSymbolPeer">—</div>
+            </div>
+            <div class="pc-wins" id="pcWinsPeer">0</div>
+          </div>
+        </div>
+        <div class="board" id="board"></div>
+        <div class="game-status" id="gameStatus">Connect to a peer to play</div>
+        <button class="reset-btn" id="resetGameBtn" disabled>🎮 Invite to new round</button>
+      </div>
+    </section>
+  </main>
+
+  <nav class="tab-bar">
+    <button class="tab active" data-tab="call">
+      <span class="tab-ic">📞</span>
+      <span class="tab-label">Calls</span>
+    </button>
+    <button class="tab" data-tab="chat">
+      <span class="tab-ic">💬</span>
+      <span class="tab-label">Chat</span>
+      <span class="badge-dot hidden" id="chatBadge"></span>
+    </button>
+    <button class="tab" data-tab="game">
+      <span class="tab-ic">🎮</span>
+      <span class="tab-label">Game</span>
+    </button>
+  </nav>
+
+  <div class="status-bar">
+    <span class="dot" id="dot"></span>
+    <span id="statusText">Connecting…</span>
+  </div>
+</div>
+
+<input type="file" id="fileInput" style="display:none" multiple>
+<input type="file" id="imageInput" style="display:none" accept="image/*">
+<input type="file" id="videoInput" style="display:none" accept="video/*">
+<input type="file" id="audioInput" style="display:none" accept="audio/*">
+
+<div class="attach-menu" id="attachMenu">
+  <button data-type="image"><span class="ic">🖼️</span> Photo</button>
+  <button data-type="video"><span class="ic">🎬</span> Video</button>
+  <button data-type="audio"><span class="ic">🎵</span> Audio</button>
+  <button data-type="file"><span class="ic">📄</span> File</button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
